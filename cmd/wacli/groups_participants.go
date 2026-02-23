@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -72,9 +71,9 @@ func newGroupsParticipantsActionCmd(flags *rootFlags, action string) *cobra.Comm
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, updated)
+				return out.WriteJSON(cmd.OutOrStdout(), updated)
 			}
-			fmt.Fprintln(os.Stdout, "OK")
+			fmt.Fprintln(cmd.OutOrStdout(), "OK")
 			return nil
 		},
 	}

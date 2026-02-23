@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 	"time"
 
@@ -50,10 +49,10 @@ func newGroupsInfoCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, info)
+				return out.WriteJSON(cmd.OutOrStdout(), info)
 			}
 
-			fmt.Fprintf(os.Stdout, "JID: %s\nName: %s\nOwner: %s\nCreated: %s\nParticipants: %d\n",
+			fmt.Fprintf(cmd.OutOrStdout(), "JID: %s\nName: %s\nOwner: %s\nCreated: %s\nParticipants: %d\n",
 				info.JID.String(),
 				info.GroupName.Name,
 				info.OwnerJID.String(),
@@ -104,9 +103,9 @@ func newGroupsRenameCmd(flags *rootFlags) *cobra.Command {
 				_ = persistGroupInfo(a.DB(), info)
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"jid": gjid.String(), "name": name})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"jid": gjid.String(), "name": name})
 			}
-			fmt.Fprintln(os.Stdout, "OK")
+			fmt.Fprintln(cmd.OutOrStdout(), "OK")
 			return nil
 		},
 	}
@@ -147,9 +146,9 @@ func newGroupsLeaveCmd(flags *rootFlags) *cobra.Command {
 				return err
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"jid": gjid.String(), "left": true})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"jid": gjid.String(), "left": true})
 			}
-			fmt.Fprintln(os.Stdout, "OK")
+			fmt.Fprintln(cmd.OutOrStdout(), "OK")
 			return nil
 		},
 	}

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -63,9 +62,9 @@ func newGroupsInviteLinkGetCmd(flags *rootFlags) *cobra.Command {
 				return err
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"jid": gjid.String(), "link": link})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"jid": gjid.String(), "link": link})
 			}
-			fmt.Fprintln(os.Stdout, link)
+			fmt.Fprintln(cmd.OutOrStdout(), link)
 			return nil
 		},
 	}
@@ -106,9 +105,9 @@ func newGroupsInviteLinkRevokeCmd(flags *rootFlags) *cobra.Command {
 				return err
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"jid": gjid.String(), "link": link, "revoked": true})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"jid": gjid.String(), "link": link, "revoked": true})
 			}
-			fmt.Fprintln(os.Stdout, link)
+			fmt.Fprintln(cmd.OutOrStdout(), link)
 			return nil
 		},
 	}
@@ -148,9 +147,9 @@ func newGroupsJoinCmd(flags *rootFlags) *cobra.Command {
 				_ = persistGroupInfo(a.DB(), info)
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"jid": jid.String(), "joined": true})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"jid": jid.String(), "joined": true})
 			}
-			fmt.Fprintf(os.Stdout, "Joined: %s\n", jid.String())
+			fmt.Fprintf(cmd.OutOrStdout(), "Joined: %s\n", jid.String())
 			return nil
 		},
 	}

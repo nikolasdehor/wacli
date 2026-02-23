@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -80,9 +79,9 @@ func newMediaDownloadCmd(flags *rootFlags) *cobra.Command {
 				"downloaded_at": now.Format(time.RFC3339Nano),
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, resp)
+				return out.WriteJSON(cmd.OutOrStdout(), resp)
 			}
-			fmt.Fprintf(os.Stdout, "%s (%d bytes)\n", target, bytes)
+			fmt.Fprintf(cmd.OutOrStdout(), "%s (%d bytes)\n", target, bytes)
 			return nil
 		},
 	}

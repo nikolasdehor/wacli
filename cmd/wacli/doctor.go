@@ -77,10 +77,10 @@ func newDoctorCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, rep)
+				return out.WriteJSON(cmd.OutOrStdout(), rep)
 			}
 
-			w := tabwriter.NewWriter(os.Stdout, 2, 4, 2, ' ', 0)
+			w := tabwriter.NewWriter(cmd.OutOrStdout(), 2, 4, 2, ' ', 0)
 			fmt.Fprintf(w, "STORE\t%s\n", rep.StoreDir)
 			fmt.Fprintf(w, "LOCKED\t%v\n", rep.LockHeld)
 			if rep.LockHeld && rep.LockInfo != "" {
@@ -92,7 +92,7 @@ func newDoctorCmd(flags *rootFlags) *cobra.Command {
 			_ = w.Flush()
 
 			if rep.LockHeld {
-				fmt.Fprintln(os.Stdout, "\nTip: stop the running `wacli sync` before running write operations.")
+				fmt.Fprintln(cmd.OutOrStdout(), "\nTip: stop the running `wacli sync` before running write operations.")
 			}
 			return nil
 		},

@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -77,13 +76,13 @@ func newSendTextCmd(flags *rootFlags) *cobra.Command {
 			})
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{
 					"sent": true,
 					"to":   chat.String(),
 					"id":   msgID,
 				})
 			}
-			fmt.Fprintf(os.Stdout, "Sent to %s (id %s)\n", chat.String(), msgID)
+			fmt.Fprintf(cmd.OutOrStdout(), "Sent to %s (id %s)\n", chat.String(), msgID)
 			return nil
 		},
 	}

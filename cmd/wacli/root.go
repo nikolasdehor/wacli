@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"os"
+	"io"
 	"path/filepath"
 	"time"
 
@@ -23,7 +23,7 @@ type rootFlags struct {
 	timeout  time.Duration
 }
 
-func execute(args []string) error {
+func execute(args []string, stdout, stderr io.Writer) error {
 	var flags rootFlags
 
 	rootCmd := &cobra.Command{
@@ -32,6 +32,8 @@ func execute(args []string) error {
 		SilenceErrors: true,
 		Version:       version,
 	}
+	rootCmd.SetOut(stdout)
+	rootCmd.SetErr(stderr)
 	rootCmd.SetVersionTemplate("wacli {{.Version}}\n")
 
 	rootCmd.PersistentFlags().StringVar(&flags.storeDir, "store", "", "store directory (default: ~/.wacli)")
@@ -52,7 +54,7 @@ func execute(args []string) error {
 
 	rootCmd.SetArgs(args)
 	if err := rootCmd.Execute(); err != nil {
-		_ = out.WriteError(os.Stderr, flags.asJSON, err)
+		_ = out.WriteError(stderr, flags.asJSON, err)
 		return err
 	}
 	return nil

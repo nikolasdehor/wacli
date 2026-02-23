@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"text/tabwriter"
 	"time"
 
@@ -45,9 +44,9 @@ func newGroupsRefreshCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"groups": len(gs)})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"groups": len(gs)})
 			}
-			fmt.Fprintf(os.Stdout, "Imported %d groups.\n", len(gs))
+			fmt.Fprintf(cmd.OutOrStdout(), "Imported %d groups.\n", len(gs))
 			return nil
 		},
 	}
@@ -75,10 +74,10 @@ func newGroupsListCmd(flags *rootFlags) *cobra.Command {
 				return err
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, gs)
+				return out.WriteJSON(cmd.OutOrStdout(), gs)
 			}
 
-			w := tabwriter.NewWriter(os.Stdout, 2, 4, 2, ' ', 0)
+			w := tabwriter.NewWriter(cmd.OutOrStdout(), 2, 4, 2, ' ', 0)
 			fmt.Fprintln(w, "NAME\tJID\tCREATED")
 			for _, g := range gs {
 				name := g.Name

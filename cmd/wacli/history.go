@@ -58,7 +58,7 @@ func newHistoryBackfillCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{
 					"chat":            res.ChatJID,
 					"requests_sent":   res.RequestsSent,
 					"responses_seen":  res.ResponsesSeen,
@@ -67,7 +67,7 @@ func newHistoryBackfillCmd(flags *rootFlags) *cobra.Command {
 				})
 			}
 
-			fmt.Fprintf(os.Stdout, "Backfill complete for %s. Added %d messages (%d requests).\n", res.ChatJID, res.MessagesAdded, res.RequestsSent)
+			fmt.Fprintf(cmd.OutOrStdout(), "Backfill complete for %s. Added %d messages (%d requests).\n", res.ChatJID, res.MessagesAdded, res.RequestsSent)
 			return nil
 		},
 	}

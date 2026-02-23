@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 	"text/tabwriter"
 	"time"
@@ -72,13 +71,13 @@ func newMessagesListCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{
 					"messages": msgs,
 					"fts":      a.DB().HasFTS(),
 				})
 			}
 
-			w := tabwriter.NewWriter(os.Stdout, 2, 4, 2, ' ', 0)
+			w := tabwriter.NewWriter(cmd.OutOrStdout(), 2, 4, 2, ' ', 0)
 			fmt.Fprintln(w, "TIME\tCHAT\tFROM\tID\tTEXT")
 			for _, m := range msgs {
 				from := m.SenderJID
@@ -169,13 +168,13 @@ func newMessagesSearchCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{
 					"messages": msgs,
 					"fts":      a.DB().HasFTS(),
 				})
 			}
 
-			w := tabwriter.NewWriter(os.Stdout, 2, 4, 2, ' ', 0)
+			w := tabwriter.NewWriter(cmd.OutOrStdout(), 2, 4, 2, ' ', 0)
 			fmt.Fprintf(w, "TIME\tCHAT\tFROM\tID\tMATCH\n")
 			for _, m := range msgs {
 				fromLabel := m.SenderJID
@@ -203,7 +202,7 @@ func newMessagesSearchCmd(flags *rootFlags) *cobra.Command {
 			}
 			_ = w.Flush()
 			if !a.DB().HasFTS() {
-				fmt.Fprintln(os.Stderr, "Note: FTS5 not enabled; search is using LIKE (slow).")
+				fmt.Fprintln(cmd.ErrOrStderr(), "Note: FTS5 not enabled; search is using LIKE (slow).")
 			}
 			return nil
 		},
@@ -245,24 +244,24 @@ func newMessagesShowCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, m)
+				return out.WriteJSON(cmd.OutOrStdout(), m)
 			}
 
-			fmt.Fprintf(os.Stdout, "Chat: %s\n", m.ChatJID)
+			fmt.Fprintf(cmd.OutOrStdout(), "Chat: %s\n", m.ChatJID)
 			if m.ChatName != "" {
-				fmt.Fprintf(os.Stdout, "Chat name: %s\n", m.ChatName)
+				fmt.Fprintf(cmd.OutOrStdout(), "Chat name: %s\n", m.ChatName)
 			}
-			fmt.Fprintf(os.Stdout, "ID: %s\n", m.MsgID)
-			fmt.Fprintf(os.Stdout, "Time: %s\n", m.Timestamp.Local().Format(time.RFC3339))
+			fmt.Fprintf(cmd.OutOrStdout(), "ID: %s\n", m.MsgID)
+			fmt.Fprintf(cmd.OutOrStdout(), "Time: %s\n", m.Timestamp.Local().Format(time.RFC3339))
 			if m.FromMe {
-				fmt.Fprintf(os.Stdout, "From: me\n")
+				fmt.Fprintf(cmd.OutOrStdout(), "From: me\n")
 			} else {
-				fmt.Fprintf(os.Stdout, "From: %s\n", m.SenderJID)
+				fmt.Fprintf(cmd.OutOrStdout(), "From: %s\n", m.SenderJID)
 			}
 			if m.MediaType != "" {
-				fmt.Fprintf(os.Stdout, "Media: %s\n", m.MediaType)
+				fmt.Fprintf(cmd.OutOrStdout(), "Media: %s\n", m.MediaType)
 			}
-			fmt.Fprintf(os.Stdout, "\n%s\n", m.Text)
+			fmt.Fprintf(cmd.OutOrStdout(), "\n%s\n", m.Text)
 			return nil
 		},
 	}
@@ -301,10 +300,10 @@ func newMessagesContextCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, msgs)
+				return out.WriteJSON(cmd.OutOrStdout(), msgs)
 			}
 
-			w := tabwriter.NewWriter(os.Stdout, 2, 4, 2, ' ', 0)
+			w := tabwriter.NewWriter(cmd.OutOrStdout(), 2, 4, 2, ' ', 0)
 			fmt.Fprintln(w, "TIME\tFROM\tID\tTEXT")
 			for _, m := range msgs {
 				from := m.SenderJID

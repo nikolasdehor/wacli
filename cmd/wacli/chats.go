@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"text/tabwriter"
 	"time"
 
@@ -42,10 +41,10 @@ func newChatsListCmd(flags *rootFlags) *cobra.Command {
 				return err
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, chats)
+				return out.WriteJSON(cmd.OutOrStdout(), chats)
 			}
 
-			w := tabwriter.NewWriter(os.Stdout, 2, 4, 2, ' ', 0)
+			w := tabwriter.NewWriter(cmd.OutOrStdout(), 2, 4, 2, ' ', 0)
 			fmt.Fprintln(w, "KIND\tNAME\tJID\tLAST")
 			for _, c := range chats {
 				name := c.Name
@@ -86,9 +85,9 @@ func newChatsShowCmd(flags *rootFlags) *cobra.Command {
 				return err
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, c)
+				return out.WriteJSON(cmd.OutOrStdout(), c)
 			}
-			fmt.Fprintf(os.Stdout, "JID: %s\nKind: %s\nName: %s\nLast: %s\n", c.JID, c.Kind, c.Name, c.LastMessageTS.Local().Format(time.RFC3339))
+			fmt.Fprintf(cmd.OutOrStdout(), "JID: %s\nKind: %s\nName: %s\nLast: %s\n", c.JID, c.Kind, c.Name, c.LastMessageTS.Local().Format(time.RFC3339))
 			return nil
 		},
 	}

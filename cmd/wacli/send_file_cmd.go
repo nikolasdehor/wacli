@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/steipete/wacli/internal/out"
@@ -52,14 +51,14 @@ func newSendFileCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{
 					"sent": true,
 					"to":   toJID.String(),
 					"id":   msgID,
 					"file": meta,
 				})
 			}
-			fmt.Fprintf(os.Stdout, "Sent %s to %s (id %s)\n", meta["name"], toJID.String(), msgID)
+			fmt.Fprintf(cmd.OutOrStdout(), "Sent %s to %s (id %s)\n", meta["name"], toJID.String(), msgID)
 			return nil
 		},
 	}

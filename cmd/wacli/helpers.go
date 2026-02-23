@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -9,8 +10,12 @@ import (
 	"golang.org/x/term"
 )
 
-func isTTY() bool {
-	return term.IsTerminal(int(os.Stdout.Fd()))
+func isTTY(w io.Writer) bool {
+	f, ok := w.(*os.File)
+	if !ok {
+		return false
+	}
+	return term.IsTerminal(int(f.Fd()))
 }
 
 func parseTime(s string) (time.Time, error) {

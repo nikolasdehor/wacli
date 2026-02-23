@@ -37,7 +37,7 @@ func newAuthCmd(flags *rootFlags) *cobra.Command {
 				mode = appPkg.SyncModeFollow
 			}
 
-			fmt.Fprintln(os.Stderr, "Starting authentication…")
+			fmt.Fprintln(cmd.ErrOrStderr(), "Starting authentication…")
 			res, err := a.Sync(ctx, appPkg.SyncOptions{
 				Mode:            mode,
 				AllowQR:         true,
@@ -46,9 +46,9 @@ func newAuthCmd(flags *rootFlags) *cobra.Command {
 				RefreshGroups:   true,
 				IdleExit:        idleExit,
 				OnQRCode: func(code string) {
-					fmt.Fprintln(os.Stderr, "\nScan this QR code with WhatsApp (Linked Devices):")
-					qrterminal.GenerateHalfBlock(code, qrterminal.M, os.Stderr)
-					fmt.Fprintln(os.Stderr)
+					fmt.Fprintln(cmd.ErrOrStderr(), "\nScan this QR code with WhatsApp (Linked Devices):")
+					qrterminal.GenerateHalfBlock(code, qrterminal.M, cmd.ErrOrStderr())
+					fmt.Fprintln(cmd.ErrOrStderr())
 				},
 			})
 			if err != nil {
@@ -56,13 +56,13 @@ func newAuthCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]interface{}{
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]interface{}{
 					"authenticated":   true,
 					"messages_stored": res.MessagesStored,
 				})
 			}
 
-			fmt.Fprintf(os.Stdout, "Authenticated. Messages stored: %d\n", res.MessagesStored)
+			fmt.Fprintf(cmd.OutOrStdout(), "Authenticated. Messages stored: %d\n", res.MessagesStored)
 			return nil
 		},
 	}
@@ -97,14 +97,14 @@ func newAuthStatusCmd(flags *rootFlags) *cobra.Command {
 			authed := a.WA().IsAuthed()
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{
 					"authenticated": authed,
 				})
 			}
 			if authed {
-				fmt.Fprintln(os.Stdout, "Authenticated.")
+				fmt.Fprintln(cmd.OutOrStdout(), "Authenticated.")
 			} else {
-				fmt.Fprintln(os.Stdout, "Not authenticated. Run `wacli auth`.")
+				fmt.Fprintln(cmd.OutOrStdout(), "Not authenticated. Run `wacli auth`.")
 			}
 			return nil
 		},
@@ -136,9 +136,9 @@ func newAuthLogoutCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"logged_out": true})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"logged_out": true})
 			}
-			fmt.Fprintln(os.Stdout, "Logged out.")
+			fmt.Fprintln(cmd.OutOrStdout(), "Logged out.")
 			return nil
 		},
 	}

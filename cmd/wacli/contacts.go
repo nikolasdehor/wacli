@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"fmt"
-	"os"
 	"strings"
 	"text/tabwriter"
 
@@ -46,10 +45,10 @@ func newContactsSearchCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, cs)
+				return out.WriteJSON(cmd.OutOrStdout(), cs)
 			}
 
-			w := tabwriter.NewWriter(os.Stdout, 2, 4, 2, ' ', 0)
+			w := tabwriter.NewWriter(cmd.OutOrStdout(), 2, 4, 2, ' ', 0)
 			fmt.Fprintln(w, "ALIAS\tNAME\tPHONE\tJID")
 			for _, c := range cs {
 				fmt.Fprintf(w, "%s\t%s\t%s\t%s\n",
@@ -91,21 +90,21 @@ func newContactsShowCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, c)
+				return out.WriteJSON(cmd.OutOrStdout(), c)
 			}
 
-			fmt.Fprintf(os.Stdout, "JID: %s\n", c.JID)
+			fmt.Fprintf(cmd.OutOrStdout(), "JID: %s\n", c.JID)
 			if c.Phone != "" {
-				fmt.Fprintf(os.Stdout, "Phone: %s\n", c.Phone)
+				fmt.Fprintf(cmd.OutOrStdout(), "Phone: %s\n", c.Phone)
 			}
 			if c.Name != "" {
-				fmt.Fprintf(os.Stdout, "Name: %s\n", c.Name)
+				fmt.Fprintf(cmd.OutOrStdout(), "Name: %s\n", c.Name)
 			}
 			if c.Alias != "" {
-				fmt.Fprintf(os.Stdout, "Alias: %s\n", c.Alias)
+				fmt.Fprintf(cmd.OutOrStdout(), "Alias: %s\n", c.Alias)
 			}
 			if len(c.Tags) > 0 {
-				fmt.Fprintf(os.Stdout, "Tags: %s\n", strings.Join(c.Tags, ", "))
+				fmt.Fprintf(cmd.OutOrStdout(), "Tags: %s\n", strings.Join(c.Tags, ", "))
 			}
 			return nil
 		},
@@ -150,9 +149,9 @@ func newContactsRefreshCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"contacts": count})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"contacts": count})
 			}
-			fmt.Fprintf(os.Stdout, "Imported %d contacts.\n", count)
+			fmt.Fprintf(cmd.OutOrStdout(), "Imported %d contacts.\n", count)
 			return nil
 		},
 	}
@@ -184,9 +183,9 @@ func newContactsAliasCmd(flags *rootFlags) *cobra.Command {
 				return err
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"jid": jid, "alias": alias})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"jid": jid, "alias": alias})
 			}
-			fmt.Fprintln(os.Stdout, "OK")
+			fmt.Fprintln(cmd.OutOrStdout(), "OK")
 			return nil
 		},
 	})
@@ -209,9 +208,9 @@ func newContactsAliasCmd(flags *rootFlags) *cobra.Command {
 				return err
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"jid": jid, "removed": true})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"jid": jid, "removed": true})
 			}
-			fmt.Fprintln(os.Stdout, "OK")
+			fmt.Fprintln(cmd.OutOrStdout(), "OK")
 			return nil
 		},
 	})
@@ -246,9 +245,9 @@ func newContactsTagsCmd(flags *rootFlags) *cobra.Command {
 				return err
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"jid": jid, "tag": tag})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"jid": jid, "tag": tag})
 			}
-			fmt.Fprintln(os.Stdout, "OK")
+			fmt.Fprintln(cmd.OutOrStdout(), "OK")
 			return nil
 		},
 	})
@@ -272,9 +271,9 @@ func newContactsTagsCmd(flags *rootFlags) *cobra.Command {
 				return err
 			}
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{"jid": jid, "tag": tag, "removed": true})
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{"jid": jid, "tag": tag, "removed": true})
 			}
-			fmt.Fprintln(os.Stdout, "OK")
+			fmt.Fprintln(cmd.OutOrStdout(), "OK")
 			return nil
 		},
 	})

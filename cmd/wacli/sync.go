@@ -60,12 +60,12 @@ func newSyncCmd(flags *rootFlags) *cobra.Command {
 			}
 
 			if flags.asJSON {
-				return out.WriteJSON(os.Stdout, map[string]any{
+				return out.WriteJSON(cmd.OutOrStdout(), map[string]any{
 					"synced":          true,
 					"messages_stored": res.MessagesStored,
 				})
 			}
-			fmt.Fprintf(os.Stdout, "Messages stored: %d\n", res.MessagesStored)
+			fmt.Fprintf(cmd.OutOrStdout(), "Messages stored: %d\n", res.MessagesStored)
 			return nil
 		},
 	}
