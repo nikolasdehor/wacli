@@ -42,3 +42,39 @@ go.work.sum
 
 # pnpm build output
 /dist/
+
+# Agent and local tooling caches
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.hypothesis/
+.coverage
+htmlcov/
+coverage/
+node_modules/
+.next/
+build/
+.turbo/
+.vite/
+tmp/
+temp/
+.codex/
+.codex-cache/
+.agents/cache/
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache.v3/
+.claude/settings.local.json
+.claude/cache/
+.claude/logs/
+.gemini/cache/
+.gemini/tmp/
+.serena/cache/
+.continue/cache/
+.playwright-mcp/
+agent-browser*.png
+browser-use*.log
+playwright-report/
+test-results/
